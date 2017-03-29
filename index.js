@@ -1,33 +1,42 @@
-'use strict'
 // include modules
 var bodyParser          = require('body-parser');
 var cookieParser        = require('cookie-parser');
 var express             = require('express');
-var LocalStrategy       = require('passport-local').Strategy;
 var passport            = require('passport');
+var LocalStrategy       = require('passport-local').Strategy;
 var session             = require('express-session');
 
 // initialize express app
 var app = express();
 
+//"database without a database lol"
+var users = [];
 
-var users = {};
-
-
+//console.log('im running');
 // tell passport to use a local strategy and tell it how to validate a username and password
 passport.use(new LocalStrategy(function(username, password, done) {
-    if (username && password === 'pass') {
-        return done(null, { 
-            username: username ,
-            keys: {}
-        });
+    for(var z = 0 ; z< users.length; z++){
+        if (users[z].username === username && users[z].password === password) {
+            return done(null, users[z]);
+        }
     }
-    return done(null, false);
+    if (username && password === 'pass') {
+        var curUser = {
+            username: username,
+            password: password,
+                keys: {}
+        };
+        users.push(curUser);
+        return done(null, curUser);
+    }
+    else{
+        return(done, false);
+    }
 }));
 
 // tell passport how to turn a user into serialized data that will be stored with the session
 passport.serializeUser(function(user, done) {
-    done(null, user);
+    done(null, user.username);
 });
 
 // tell passport how to go from the serialized data back to the user
@@ -38,60 +47,53 @@ passport.deserializeUser(function(id, done) {
 // tell the express app what middleware to use
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-session({ secret: 'secret key', resave: false, saveUninitialized: true }));
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// home page
-app.get('/', function (req, res) {
-    if (req.key && req.value) return res.send('Hello, ' + req.user.username);
-    else(res.sendStatus(401));
+// see if you are running
+app.post('/health', function (req, res) {
+    //res.sendStatus(200);
+    res.status(200).send(passport);
 });
 
-// specify a URL that only authenticated users can hit
-app.get('/protected',
-    function(req, res) {
-        if (!req.user) return res.sendStatus(401);
-        res.send('You have access.');
+//login
+app.post('/login', 
+    passport.authenticate('local'),
+    function(req, res){
+        req.status(200).send(req.user.keys);
     }
 );
 
-// specify the login url
-app.put('/auth',
-    passport.authenticate('local'),
+
+// show keys
+app.get('/', function (req, res) {
+    if (req.user) return res.send(req.user.user.keys);
+    else(res.sendStatus(401));
+});
+
+
+// add keys
+app.put('/',
     function(req, res) {
-        res.send('You are authenticated, ' + req.user.username);
+        res.send('You are trynna add' );
+    });
+
+// remove keys
+app.delete('/',
+    function(req, res) {
+        res.send('You are trynna delete' );
     });
 
 // log the user out
-app.delete('/auth', function(req, res) {
+app.get('/logout', function(req, res) {
     req.logout();
-    res.send('You have logged out.');
+    res.sendStatus(200);
 });
 
 // start the server listening
 app.listen(3000, function () {
-    console.log('Server listening on port 3000.');
-});
-
-app.post('/health', function (req, res) {
-    res.sendStatus(200);
-});
-
-app.post ('/login', function() {
-    console.log('logging in');
-    passport.authenticate('local',{
-        successRedirect: '/loginSuccess',
-        failureRedirect: '/loginFailure'
-    });
+    console.log('Server listening on port 3000. babab');
 
 });
 
-app.get('/loginFailure', function(req, res, next) {
-  console.log("does a user exsist", req.user, users);
-});
-
-app.get('/loginSuccess', function(req, res, next) {
-  res.send('Successfully authenticated');
-});
