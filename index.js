@@ -68,7 +68,7 @@ app.post('/login',
 
 // show keys
 app.get('/', function (req, res) {
-    if (req.user) return res.send(req.user.user.keys);
+    if (req.user) return res.send(req.user.keys);
     else(res.sendStatus(401));
 });
 
