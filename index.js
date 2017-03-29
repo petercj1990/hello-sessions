@@ -76,14 +76,15 @@ app.get('/', function (req, res) {
 // add keys
 app.put('/',
     function(req, res) {
-        console.log('tryna add');
+        //console.log('tryna add');
         if(req.user){
             for (var x = 0; x < users.length; x++){
                 if (req.user.username === users[x].username){
+                    console.log(users[x].username, users[x].keys)
                     users[x].keys[req.key]= req.value;
                 }
             }
-            return res.send(req.user.keys)
+            return res.send(req.user.keys);
         }
         else{
             return res.sendStatus(401);
