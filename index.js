@@ -61,7 +61,7 @@ app.post('/health', function (req, res) {
 app.post('/login', 
     passport.authenticate('local'),
     function(req, res){
-        req.status(200).send(req.user.keys);
+        res.status(200).send(req.user.keys);
     }
 );
 
