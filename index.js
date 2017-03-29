@@ -80,7 +80,7 @@ app.put('/',
         if(req.user){
             for (var x = 0; x < users.length; x++){
                 if (req.user.username === users[x].username){
-                    console.log(users[x].username, users[x].keys)
+                    console.log("nubber", users[x].username, users[x].keys);
                     users[x].keys[req.query.key]= req.query.value;
                 }
             }
