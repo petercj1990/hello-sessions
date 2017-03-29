@@ -79,13 +79,14 @@ app.put('/',
         console.log('tryna add');
         if(req.user){
             for (var x = 0; x < users.length; x++){
-                if (req.user.username === users[x]){
+                if (req.user.username === users[x].username){
                     users[x].keys[req.key]= req.value;
                 }
             }
+            return res.send(req.user.keys)
         }
         else{
-            res.sendStatus(401);
+            return res.sendStatus(401);
         }
     }
 );
