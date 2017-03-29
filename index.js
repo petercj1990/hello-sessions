@@ -100,7 +100,7 @@ app.delete('/',
             for (var x = 0; x < users.length; x++){
                 if (req.user.username === users[x].username){
                     console.log("before", req.user.keys);
-                    delete user[x].keys[req.query.key];
+                    delete users[x].keys[req.query.key];
                     req.user.keys = users[x].keys;
                     console.log("before", req.user.keys);
                 }
