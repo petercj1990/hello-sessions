@@ -68,8 +68,18 @@ app.post('/login',
 
 // show keys
 app.get('/', function (req, res) {
-    if (req.user) return res.send(req.user.keys);
-    else(res.sendStatus(401));
+    if (req.user) {
+        for (var x = 0; x < users.length; x++){
+                if (req.user.username === users[x].username){
+                    req.user.keys = users[x].keys;
+                }
+            }
+            return res.send(req.user.keys);
+    }
+    else
+        {
+            res.sendStatus(401);
+        }
 });
 
 
