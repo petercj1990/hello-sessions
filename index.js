@@ -76,10 +76,11 @@ app.get('/', function (req, res) {
 // add keys
 app.put('/',
     function(req, res) {
+        console.log('tryna add');
         if(req.user){
-            for (var usr of users){
-                if (req.user.username === usr){
-                    usr.keys[req.key]= req.value;
+            for (var x = 0; x < users.length; x++){
+                if (req.user.username === users[x]){
+                    users[x].keys[req.key]= req.value;
                 }
             }
         }
