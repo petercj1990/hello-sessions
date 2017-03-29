@@ -80,10 +80,8 @@ app.put('/',
         if(req.user){
             for (var x = 0; x < users.length; x++){
                 if (req.user.username === users[x].username){
-                    console.log("before", req.user.keys);
                     users[x].keys[ req.query.key]= req.query.value;
                     req.user.keys = users[x].keys;
-                    console.log("after", req.user.keys);
                 }
             }
             return res.send(req.user.keys);
@@ -94,10 +92,24 @@ app.put('/',
     }
 );
 
-// remove keys
+// remove key
 app.delete('/',
     function(req, res) {
-        res.send('You are trynna delete' );
+        console.log("req", req.query);
+        if(req.user){
+            for (var x = 0; x < users.length; x++){
+                if (req.user.username === users[x].username){
+                    console.log("before", req.user.keys);
+                    delete user[x].keys[req.query.key];
+                    req.user.keys = users[x].keys;
+                    console.log("before", req.user.keys);
+                }
+            }
+            return res.send(req.user.keys);
+        }
+        else{
+            return res.sendStatus(401);
+        }
     });
 
 // log the user out
