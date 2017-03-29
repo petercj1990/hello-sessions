@@ -76,8 +76,18 @@ app.get('/', function (req, res) {
 // add keys
 app.put('/',
     function(req, res) {
-        res.send('You are trynna add' );
-    });
+        if(req.user){
+            for (var usr of users){
+                if (req.user.username === usr){
+                    usr.keys[req.key]= req.value;
+                }
+            }
+        }
+        else{
+            res.sendStatus(401);
+        }
+    }
+);
 
 // remove keys
 app.delete('/',
