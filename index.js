@@ -80,9 +80,10 @@ app.put('/',
         if(req.user){
             for (var x = 0; x < users.length; x++){
                 if (req.user.username === users[x].username){
-                    console.log("before", users[x]);
-                    users[x].keys['"' + req.query.key +'"']= req.query.value;
-                    console.log("after", users[x]);
+                    console.log("before", users[x].keys);
+                    users[x].keys[ req.query.key]= req.query.value;
+                    console.log("after", users[x].keys);
+                    req.user.keys = users[x].keys;
                 }
             }
             return res.send(req.user.keys);
